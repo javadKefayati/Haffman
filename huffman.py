@@ -1,8 +1,10 @@
 import re
+from tempfile import tempdir
 import matplotlib.pyplot as plt
 import numpy as np
 import heapq
 import os
+import sys
 
 # from test import freq
 
@@ -60,17 +62,17 @@ class HuffmanCoding:
 	def  make_frequency_dict(self, text):
 		frequency={}
 		numbers = re.findall("\d+", text)
-		another = re.findall("\D+", text)
+		# another = re.findall("\D+", text)
 
 		for num in numbers:
 			if (not num in frequency):
 				frequency[num] = 0
 			frequency[num]+=1
-		for ano in another:
-			for char in ano:
-				if (not char in frequency):
-					frequency[char] = 0
-				frequency[char] += 1
+		# for ano in another:
+		# 	for char in ano:
+		# 		if (not char in frequency):
+		# 			frequency[char] = 0
+		# 		frequency[char] += 1
 		print(frequency)
 		return frequency
 
@@ -110,7 +112,7 @@ class HuffmanCoding:
 
 	def get_encoded_text(self, text):
 		encoded_text = ""
-		te = re.findall("(\d+|\W)",text)
+		te = re.findall("\d+",text)
 		print(self.codes)
 		for character in te:
 			encoded_text += self.codes[character]
@@ -146,7 +148,7 @@ class HuffmanCoding:
 			text = text.rstrip()
 
 			self.frequency = self.make_frequency_dict(text)
-
+			# sys.exit()
 			self.make_heap(self.frequency)
 			self.merge_nodes()
 			self.make_codes()
@@ -161,49 +163,36 @@ class HuffmanCoding:
 		print("Compressed")
 		return output_path
 
-	""" functions for decompression: """
+	""" functions for convert huffman str to picture: """
 
-	def remove_padding(self, padded_encoded_text):
-		padded_info = padded_encoded_text[:8]
-		extra_padding = int(padded_info, 2)
+	def createFrequencyArr(self, frequency_str):
+		#init new dict arr
+		frequency={}
+		#cut all numbers from this string : for example: 32=>44 ,55=>143 convert to [32,44,55,143]
+		numbers = re.findall("\d+", frequency_str)
+		#make dict from numbers list
+		for i in range(0, len(numbers)-1,2):
+			frequency[numbers[i]]=numbers[i+1]
 
-		padded_encoded_text = padded_encoded_text[8:]
-		encoded_text = padded_encoded_text[:-1*extra_padding]
+		return frequency
+		
 
-		return encoded_text
 
-	def decode_text(self, encoded_text):
-		current_code = ""
-		decoded_text = ""
+	def decompress(self, huffman_str , frequency ):
+		numbers =""
+		temp = ""
+		# make string same => 12 232 13 453
+		for char in huffman_str:
+			temp += char
+			for i in frequency:
+				if frequency[i] == temp:
+					numbers += i+" "
+					temp=""
+					continue
+		return numbers
 
-		for bit in encoded_text:
-			current_code += bit
-			if(current_code in self.reverse_mapping):
-				character = self.reverse_mapping[current_code]
-				decoded_text += character
-				current_code = ""
 
-		return decoded_text
 
-	def decompress(self, input_path):
-		filename, file_extension = os.path.splitext(self.path)
-		output_path = filename + "_decompressed" + ".txt"
+				
 
-		with open(input_path, 'rb') as file, open(output_path, 'w') as output:
-			bit_string = ""
 
-			byte = file.read(1)
-			while(len(byte) > 0):
-				byte = ord(byte)
-				bits = bin(byte)[2:].rjust(8, '0')
-				bit_string += bits
-				byte = file.read(1)
-
-			encoded_text = self.remove_padding(bit_string)
-
-			decompressed_text = self.decode_text(encoded_text)
-
-			output.write(decompressed_text)
-
-		print("Decompressed")
-		return output_path
