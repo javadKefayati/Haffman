@@ -113,9 +113,12 @@ class HuffmanCoding:
 	def get_encoded_text(self, text):
 		encoded_text = ""
 		te = re.findall("\d+",text)
+		print("size of input :"+str(len(te)*8))
 		print(self.codes)
 		for character in te:
 			encoded_text += self.codes[character]
+		print("size of  output :"+str(len(encoded_text)))
+		print("size of  diffrent :"+str((len(te)*8-len(encoded_text))))
 		return encoded_text
 
 	def pad_encoded_text(self, encoded_text):
@@ -138,7 +141,7 @@ class HuffmanCoding:
 			b.append(int(byte, 2))
 		return b
 
-	def compress(self):
+	def compress(self ):
 		filename, file_extension = os.path.splitext(self.path)
 		output_path = filename + ".bin"
 		output_text_path = filename + "_text.txt"
