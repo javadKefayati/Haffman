@@ -156,7 +156,7 @@ class HuffmanCoding:
 			encoded_text = self.get_encoded_text(text)
 			padded_encoded_text = self.pad_encoded_text(encoded_text)
 			b = self.get_byte_array(padded_encoded_text)
-			output_txt.write(padded_encoded_text)
+			output_txt.write(encoded_text)
 
 			output.write(bytes(b))
 
