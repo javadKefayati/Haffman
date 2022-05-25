@@ -3,7 +3,7 @@ This project for compressing and decompressing picture input
 ## Download project
 
 ```basha
-git@github.com:javadKefayati/Haffman.git
+https://github.com/javadKefayati/Haffman.git
 ```
 
 ## Run project 
